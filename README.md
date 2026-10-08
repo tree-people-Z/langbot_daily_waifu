@@ -1,0 +1,24 @@
+# Daily Check-in & Waifu
+
+A LangBot 4.x plugin for daily check-in, points, leaderboards, and daily waifu draws from a local image gallery or Manshuo.
+
+## Commands
+
+Commands use the prefix configured in LangBot (commonly `!`). The default Chinese commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`. Chinese aliases include `打卡`, `我的`, `今日老婆`, `每日老婆`, and `换`.
+
+## Image sources
+
+- `local`: configure `local_wife_paths` as a JSON array of image files or directories. Directories are scanned recursively. Supported extensions: jpg, jpeg, png, gif, webp, bmp. File names can be used as character names.
+- `manshuo`: downloads the image from the configured Manshuo `/api/img/today_wife` endpoint into the plugin data directory so it can be sent as a local image.
+
+Local paths must be visible inside the Plugin Runtime environment. For containers, mount the gallery into the runtime container and configure its in-container absolute path.
+
+## Data
+
+SQLite data and cached Manshuo images are stored under `data/` in this plugin directory. Keep that directory persistent when upgrading or recreating the runtime.
+
+## Development
+
+Install dependencies with `pip install -r requirements.txt`. Validate and debug with `lbp run`; package with `lbp build`.
+
+The source logic was migrated from the GPL-3.0 licensed AstrBot plugin, so this plugin is also distributed under GPL-3.0. See `LICENSE`.

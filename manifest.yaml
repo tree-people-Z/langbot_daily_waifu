@@ -1,0 +1,87 @@
+apiVersion: v1
+kind: Plugin
+metadata:
+  author: tree-people-Z
+  name: DailyCheckinWaifu
+  repository: https://github.com/tree-people-Z/langbot_daily_waifu
+  version: 0.1.0
+  description:
+    en_US: Daily check-in, points, leaderboard, and daily waifu from local or Manshuo galleries.
+    zh_Hans: 每日签到、积分排行与本地/漫朔图库抽老婆。
+  label:
+    en_US: Daily Check-in & Waifu
+    zh_Hans: 每日签到与抽老婆
+spec:
+  config:
+    - name: timezone
+      type: integer
+      label: {en_US: Timezone offset, zh_Hans: 时区偏移}
+      description: {en_US: Offset from UTC in hours., zh_Hans: 用于自然日重置，默认 UTC+8。}
+      default: 8
+    - name: leaderboard_scope
+      type: select
+      label: {en_US: Leaderboard scope, zh_Hans: 排行榜范围}
+      default: global
+      options:
+        - name: global
+          label: {en_US: Global, zh_Hans: 全局}
+        - name: group
+          label: {en_US: Group, zh_Hans: 当前群}
+    - name: fortune_tiers
+      type: string
+      label: {en_US: Fortune tiers JSON, zh_Hans: 运势等级 JSON}
+      description: {en_US: JSON array with name, weight, min_points and max_points., zh_Hans: JSON 数组，字段为 name、weight、min_points、max_points；留空使用内置九级。}
+      default: ""
+    - name: streak_bonus_per_day
+      type: integer
+      label: {en_US: Streak bonus per day, zh_Hans: 连签每日加成}
+      default: 5
+    - name: streak_bonus_cap
+      type: integer
+      label: {en_US: Streak bonus cap, zh_Hans: 连签加成上限}
+      default: 50
+    - name: waifu_source
+      type: select
+      label: {en_US: Waifu image source, zh_Hans: 老婆图源}
+      default: manshuo
+      options:
+        - name: manshuo
+          label: {en_US: Manshuo, zh_Hans: 漫朔}
+        - name: local
+          label: {en_US: Local gallery, zh_Hans: 本地图库}
+    - name: local_wife_paths
+      type: string
+      label: {en_US: Local image paths, zh_Hans: 本地图库路径}
+      description: {en_US: JSON array of image files or directories visible to the Plugin Runtime., zh_Hans: JSON 数组，填写运行时可访问的图片文件或目录路径。}
+      default: "[]"
+    - name: local_wife_name_from_filename
+      type: boolean
+      label: {en_US: Use filename as character name, zh_Hans: 使用文件名作为角色名}
+      default: true
+    - name: manshuo_base_url
+      type: string
+      label: {en_US: Manshuo base URL, zh_Hans: 漫朔地址}
+      default: https://web.manshuo.ink
+    - name: manshuo_api_key
+      type: string
+      label: {en_US: Manshuo API key, zh_Hans: 漫朔 API Key}
+      description: {en_US: Optional X-API-Key header., zh_Hans: 可选，作为 X-API-Key 请求头发送。}
+      default: ""
+    - name: change_wife_cost
+      type: integer
+      label: {en_US: Change waifu cost, zh_Hans: 换老婆积分成本}
+      default: 300
+    - name: change_wife_limit
+      type: integer
+      label: {en_US: Daily change limit, zh_Hans: 每日换老婆次数上限}
+      description: {en_US: Set to 0 for unlimited changes., zh_Hans: 设为 0 表示不限次数。}
+      default: 2
+  components:
+    Command:
+      fromDirs:
+        - path: components/commands/
+          maxDepth: 2
+execution:
+  python:
+    path: main.py
+    attr: DailyWaifuPlugin

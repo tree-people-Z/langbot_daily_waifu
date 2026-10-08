@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Command
+metadata:
+  name: 签到
+  label: {en_US: Check-in, zh_Hans: 签到}
+  description: {en_US: Daily check-in and earn points., zh_Hans: 每日签到并领取积分。}
+spec: {}
+execution:
+  python:
+    path: checkin.py
+    attr: Checkin

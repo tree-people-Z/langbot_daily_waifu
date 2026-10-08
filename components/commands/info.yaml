@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Command
+metadata:
+  name: 我的信息
+  label: {en_US: My Information, zh_Hans: 我的信息}
+  description: {en_US: Show points and daily activity., zh_Hans: 查看积分、签到和今日老婆。}
+spec: {}
+execution:
+  python:
+    path: info.py
+    attr: Info

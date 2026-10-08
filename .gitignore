@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*.lbpkg
+.buildcheck/
+data/*
+!data/.gitkeep
