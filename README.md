@@ -7,6 +7,7 @@ A LangBot 4.x plugin for daily check-in, points, leaderboards, and daily waifu d
 Commands use the prefix configured in LangBot (commonly `!`). The commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`.
 
 The default check-in streak bonus is 50 points per consecutive day, capped at 500 points, scaled with the expanded fortune tiers.
+Use the `签到积分倍率` setting to scale every fortune tier's base reward without editing JSON. The check-in reply uses Markdown-formatted text.
 
 ## Image sources
 

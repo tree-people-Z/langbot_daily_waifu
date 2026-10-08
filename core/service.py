@@ -133,6 +133,7 @@ class DailyService:
             tiers = self.tiers()
             tier = random.choices(tiers, weights=[t["weight"] for t in tiers], k=1)[0] if sum(t["weight"] for t in tiers) else random.choice(tiers)
             base = random.randint(tier["min_points"], tier["max_points"])
+            base *= max(0, self._int("checkin_point_multiplier", 1))
             per_day, cap = self._int("streak_bonus_per_day", 50), self._int("streak_bonus_cap", 500)
             bonus = min(streak * per_day, cap) if per_day > 0 else 0
             gain = base + bonus
@@ -144,14 +145,18 @@ class DailyService:
             await db.commit()
         total = (row[0] if row else 0) + gain
         if tier["name"] == "超大吉":
-            lines = ["🌟🌟🌟 超大吉！终极大奖降临！🌟🌟🌟", f"签到获得 {base:,} 积分！"]
+            title = "# 🌟 超大吉！终极大奖降临！"
         else:
             mood = "🎉" if "吉" in tier["name"] else "😢"
-            lines = [f"📅 今日运势：{tier['name']} {mood}"]
-            lines.append(f"签到获得 {base:,} 积分" + (f"（连签 {streak} 天，额外 +{bonus:,}）" if bonus else "！"))
-        if tier["name"] == "超大吉" and bonus:
-            lines.append(f"连续签到 {streak} 天，额外加成 +{bonus:,} 积分")
-        lines.extend([f"💰 当前累计积分：{total:,}", f"🔥 连续签到：{streak} 天"])
+            title = f"# 📅 今日运势：{tier['name']} {mood}"
+        lines = [
+            title,
+            f"**签到获得：** {base:,} 积分",
+            f"**连签奖励：** +{bonus:,} 积分（连续第 {streak} 天）",
+            "---",
+            f"**当前累计：** {total:,} 积分",
+            f"**连续签到：** 🔥 {streak} 天",
+        ]
         return "\n".join(lines)
 
     async def my_info(self, sender_id: str, scope_id: str, group_id: str, sender_name: str) -> str:

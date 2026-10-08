@@ -30,15 +30,22 @@ spec:
     - name: fortune_tiers
       type: string
       label: {en_US: Fortune tiers JSON, zh_Hans: 运势等级 JSON}
-      description: {en_US: JSON array with name, weight, min_points and max_points., zh_Hans: JSON 数组，字段为 name、weight、min_points、max_points；留空使用内置九级。}
+      description: {en_US: Optional advanced JSON override. Leave blank to use built-in tiers., zh_Hans: 高级设置：可用 JSON 覆盖九档运势。日常调整积分建议修改下面的整体倍率；留空使用内置九级。}
       default: ""
+    - name: checkin_point_multiplier
+      type: integer
+      label: {en_US: Check-in points multiplier, zh_Hans: 签到积分倍率}
+      description: {en_US: Multiplies base points from all fortune tiers. Streak bonus is configured separately., zh_Hans: 一处调整所有运势档位的基础积分，连签奖励单独设置。}
+      default: 1
     - name: streak_bonus_per_day
       type: integer
       label: {en_US: Streak bonus per day, zh_Hans: 连签每日加成}
+      description: {en_US: Additional points per consecutive day., zh_Hans: 连续签到每多一天增加的积分。}
       default: 50
     - name: streak_bonus_cap
       type: integer
       label: {en_US: Streak bonus cap, zh_Hans: 连签加成上限}
+      description: {en_US: Maximum streak bonus points., zh_Hans: 连签奖励的最高积分。}
       default: 500
     - name: waifu_source
       type: select
