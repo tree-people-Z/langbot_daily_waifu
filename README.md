@@ -4,11 +4,11 @@ A LangBot 4.x plugin for daily check-in, points, leaderboards, and daily waifu d
 
 ## Commands
 
-Commands use the prefix configured in LangBot (commonly `!`). The commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`.
+Commands use a prefix enabled in LangBot (`!`, `！`, or `/` in the provided container configuration). The commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `/签到`, `/老婆`, and `/换老婆`.
 
-The default check-in streak bonus is 50 points per consecutive day, capped at 500 points, scaled with the expanded fortune tiers.
-Use the `签到积分倍率` setting to scale every fortune tier's base reward without editing JSON. Check-in and other command replies use clean plain text for reliable group delivery.
-Replies are normalized to clean plain text for group adapters, so Markdown markers are not shown literally. Image replies are returned as Base64 message content, so container deployments do not require a separate Box Runtime or host file-transfer service.
+The default check-in streak bonus is 50 points per consecutive day, capped at 500 points. Use the `签到积分倍率` setting to scale every fortune tier's base reward without editing JSON. The default cost to change a waifu is 3000 points.
+
+All replies use clean plain text for reliable group delivery. Image replies are returned as Base64 message content, so container deployments do not require a separate Box Runtime or host file-transfer service.
 
 ## Image sources
 

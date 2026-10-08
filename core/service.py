@@ -267,6 +267,18 @@ class DailyService:
         await self._ensure_db()
         async with self._db_lock, aiosqlite.connect(self.db_path) as db:
             await db.execute("BEGIN IMMEDIATE")
+            cursor = await db.execute(
+                "SELECT change_count FROM daily_wife WHERE sender_id=? AND group_id=? AND date=?",
+                (sender_id, group_id, today),
+            )
+            current_wife = await cursor.fetchone()
+            if not current_wife:
+                await db.rollback()
+                return {"text": "今日老婆记录已失效，请重新发送 老婆 抽取。"}
+            current_count = int(current_wife[0])
+            if limit > 0 and current_count >= limit:
+                await db.rollback()
+                return {"text": f"# 换老婆次数已用完\n\n今日上限为 **{limit} 次**，明天再来吧~"}
             cursor = await db.execute("SELECT points FROM users WHERE sender_id=? AND scope_id=?", (sender_id, scope_id))
             balance = await cursor.fetchone()
             if cost > 0 and (not balance or balance[0] < cost):
@@ -275,13 +287,14 @@ class DailyService:
                 return {"text": f"# 积分不足\n\n换老婆需要 **{cost:,} 积分**，你当前有 **{current:,} 积分**，还差 **{cost - current:,} 积分**。"}
             if cost > 0:
                 await db.execute("UPDATE users SET points=points-?,sender_name=? WHERE sender_id=? AND scope_id=?", (cost, sender_name, sender_id, scope_id))
-            await db.execute("INSERT INTO daily_wife(sender_id,group_id,date,character_name,image_url,source,extra,change_count) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(sender_id,group_id,date) DO UPDATE SET character_name=excluded.character_name,image_url=excluded.image_url,source=excluded.source,extra=excluded.extra,change_count=excluded.change_count", (sender_id, group_id, today, result.get("name", ""), result.get("image", ""), result.get("source", ""), json.dumps(result, ensure_ascii=False), count + 1))
+            new_count = current_count + 1
+            await db.execute("INSERT INTO daily_wife(sender_id,group_id,date,character_name,image_url,source,extra,change_count) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(sender_id,group_id,date) DO UPDATE SET character_name=excluded.character_name,image_url=excluded.image_url,source=excluded.source,extra=excluded.extra,change_count=excluded.change_count", (sender_id, group_id, today, result.get("name", ""), result.get("image", ""), result.get("source", ""), json.dumps(result, ensure_ascii=False), new_count))
             await db.commit()
         prefix = f"🔄 换老婆成功（消耗 {cost} 积分）" if cost > 0 else "🔄 换老婆成功"
         title = f"💘 {prefix}！新老婆是：{result.get('name')}" if result.get("name") else f"💘 {prefix}！新老婆已到位！"
         lines = [f"# {title}"]
         if limit > 0:
-            lines.append(f"**🔄 今日换老婆次数：** {count + 1}/{limit}")
+            lines.append(f"**🔄 今日换老婆次数：** {new_count}/{limit}")
         user_after = await self._user(sender_id, scope_id)
         if user_after:
             lines.append(f"**💰 剩余积分：** {user_after[0]:,}")
