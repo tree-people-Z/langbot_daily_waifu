@@ -4,7 +4,7 @@ metadata:
   author: tree-people-Z
   name: DailyCheckinWaifu
   repository: https://github.com/tree-people-Z/langbot_daily_waifu
-  version: 0.1.1
+  version: 0.1.2
   description:
     en_US: Daily check-in, points, leaderboard, and daily waifu from local or Manshuo galleries.
     zh_Hans: 每日签到、积分排行与本地/漫朔图库抽老婆。
@@ -65,15 +65,6 @@ spec:
       type: boolean
       label: {en_US: Use filename as character name, zh_Hans: 使用文件名作为角色名}
       default: true
-    - name: manshuo_base_url
-      type: string
-      label: {en_US: Manshuo base URL, zh_Hans: 漫朔地址}
-      default: https://web.manshuo.ink
-    - name: manshuo_api_key
-      type: string
-      label: {en_US: Manshuo API key, zh_Hans: 漫朔 API Key}
-      description: {en_US: Optional X-API-Key header., zh_Hans: 可选，作为 X-API-Key 请求头发送。}
-      default: ""
     - name: change_wife_cost
       type: integer
       label: {en_US: Change waifu cost, zh_Hans: 换老婆积分成本}

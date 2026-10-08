@@ -12,7 +12,7 @@ Use the `签到积分倍率` setting to scale every fortune tier's base reward w
 ## Image sources
 
 - `local`: configure `local_wife_paths` as a JSON array of image files or directories. Directories are scanned recursively. Supported extensions: jpg, jpeg, png, gif, webp, bmp. File names can be used as character names.
-- `manshuo`: downloads the image from the configured Manshuo `/api/img/today_wife` endpoint into the plugin data directory so it can be sent as a local image.
+- `manshuo`: downloads the image from `https://web.manshuo.ink/api/img/today_wife` into the plugin data directory so it can be sent as a local image. No URL or API key configuration is needed.
 
 Local paths must be visible inside the Plugin Runtime environment. For containers, mount the gallery into the runtime container and configure its in-container absolute path.
 

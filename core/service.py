@@ -206,16 +206,12 @@ class DailyService:
             name = image.stem if self.config.get("local_wife_name_from_filename", True) else ""
             return {"name": name, "image": str(image), "source": "本地图库", "local": True}
 
-        base_url = str(self.config.get("manshuo_base_url") or "https://web.manshuo.ink").rstrip("/")
-        headers = {"Accept": "image/*"}
-        api_key = str(self.config.get("manshuo_api_key") or "").strip()
-        if api_key:
-            headers["X-API-Key"] = api_key
+        image_url = "https://web.manshuo.ink/api/img/today_wife"
         image_path = self.data_dir / "wife_images" / f"{uuid4().hex}.jpg"
         image_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             async with httpx.AsyncClient(timeout=20, follow_redirects=True) as client:
-                response = await client.get(f"{base_url}/api/img/today_wife", headers=headers)
+                response = await client.get(image_url, headers={"Accept": "image/*"})
                 response.raise_for_status()
                 if not response.headers.get("content-type", "").startswith("image/"):
                     return None
