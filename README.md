@@ -6,6 +6,8 @@ A LangBot 4.x plugin for daily check-in, points, leaderboards, and daily waifu d
 
 Commands use the prefix configured in LangBot (commonly `!`). The commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`.
 
+The default check-in streak bonus is 50 points per consecutive day, capped at 500 points, scaled with the expanded fortune tiers.
+
 ## Image sources
 
 - `local`: configure `local_wife_paths` as a JSON array of image files or directories. Directories are scanned recursively. Supported extensions: jpg, jpeg, png, gif, webp, bmp. File names can be used as character names.

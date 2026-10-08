@@ -14,7 +14,7 @@ def get_service(plugin) -> DailyService:
 def identity(context):
     session = context.session
     sender_id = str(session.sender_id or session.launcher_id)
-    sender_name = sender_id
+    sender_name = str(getattr(session, "sender_name", "") or sender_id)
     launcher_type = getattr(session.launcher_type, "value", session.launcher_type)
     group_id = str(session.launcher_id) if launcher_type == "group" else ""
     return sender_id, group_id, sender_name, launcher_type, str(session.launcher_id)

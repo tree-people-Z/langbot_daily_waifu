@@ -133,7 +133,7 @@ class DailyService:
             tiers = self.tiers()
             tier = random.choices(tiers, weights=[t["weight"] for t in tiers], k=1)[0] if sum(t["weight"] for t in tiers) else random.choice(tiers)
             base = random.randint(tier["min_points"], tier["max_points"])
-            per_day, cap = self._int("streak_bonus_per_day", 5), self._int("streak_bonus_cap", 50)
+            per_day, cap = self._int("streak_bonus_per_day", 50), self._int("streak_bonus_cap", 500)
             bonus = min(streak * per_day, cap) if per_day > 0 else 0
             gain = base + bonus
             await db.execute(

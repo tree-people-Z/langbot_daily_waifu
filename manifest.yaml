@@ -35,11 +35,11 @@ spec:
     - name: streak_bonus_per_day
       type: integer
       label: {en_US: Streak bonus per day, zh_Hans: 连签每日加成}
-      default: 5
+      default: 50
     - name: streak_bonus_cap
       type: integer
       label: {en_US: Streak bonus cap, zh_Hans: 连签加成上限}
-      default: 50
+      default: 500
     - name: waifu_source
       type: select
       label: {en_US: Waifu image source, zh_Hans: 老婆图源}
