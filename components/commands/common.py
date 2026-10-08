@@ -1,6 +1,10 @@
 """Shared command helpers."""
 
+import base64
+from pathlib import Path
+
 from core.service import DailyService
+from langbot_plugin.api.entities.builtin.command.context import CommandReturn
 
 
 def get_service(plugin) -> DailyService:
@@ -18,3 +22,15 @@ def identity(context):
     launcher_type = getattr(session.launcher_type, "value", session.launcher_type)
     group_id = str(session.launcher_id) if launcher_type == "group" else ""
     return sender_id, group_id, sender_name, launcher_type, str(session.launcher_id)
+
+
+def command_return(result: dict) -> CommandReturn:
+    """Build a transport-safe response without Runtime file-transfer keys."""
+    image_base64 = None
+    image_path = result.get("image")
+    if image_path:
+        try:
+            image_base64 = base64.b64encode(Path(image_path).read_bytes()).decode("ascii")
+        except (OSError, TypeError, ValueError):
+            image_base64 = None
+    return CommandReturn(text=result.get("text", ""), image_base64=image_base64)

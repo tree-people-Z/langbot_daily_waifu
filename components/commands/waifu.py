@@ -4,9 +4,8 @@ from typing import AsyncGenerator
 
 from langbot_plugin.api.definition.components.command.command import Command
 from langbot_plugin.api.entities.builtin.command.context import CommandReturn, ExecuteContext
-from langbot_plugin.api.entities.builtin.platform.message import Image, MessageChain, Plain
 
-from .common import get_service, identity
+from .common import command_return, get_service, identity
 
 
 class Waifu(Command):
@@ -18,10 +17,5 @@ class Waifu(Command):
             service = get_service(self.plugin)
             sender, group, name, _, _ = identity(context)
             result = await service.wife(sender, group, name)
-            if result.get("image"):
-                await context.reply(MessageChain([Image(path=result["image"]), Plain(text="\n" + result["text"])]))
-            else:
-                await context.reply(MessageChain([Plain(text=result["text"])]))
-            if False:
-                yield CommandReturn()
+            yield command_return(result)
 

@@ -4,9 +4,8 @@ from typing import AsyncGenerator
 
 from langbot_plugin.api.definition.components.command.command import Command
 from langbot_plugin.api.entities.builtin.command.context import CommandReturn, ExecuteContext
-from langbot_plugin.api.entities.builtin.platform.message import Image, MessageChain, Plain
 
-from .common import get_service, identity
+from .common import command_return, get_service, identity
 
 
 class ChangeWife(Command):
@@ -19,14 +18,4 @@ class ChangeWife(Command):
             sender, group, name, launcher_type, launcher_id = identity(context)
             scope = service.scope_id(launcher_type, launcher_id, service.config)
             result = await service.change_wife(sender, scope, group, name)
-            if result.get("image"):
-                await context.reply(
-                    MessageChain([
-                        Image(path=result["image"]),
-                        Plain(text="\n" + result["text"]),
-                    ])
-                )
-            else:
-                await context.reply(MessageChain([Plain(text=result["text"])]))
-            if False:
-                yield CommandReturn()
+            yield command_return(result)
