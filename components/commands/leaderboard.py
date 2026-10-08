@@ -5,7 +5,7 @@ from typing import AsyncGenerator
 from langbot_plugin.api.definition.components.command.command import Command
 from langbot_plugin.api.entities.builtin.command.context import CommandReturn, ExecuteContext
 
-from .common import get_service, identity
+from .common import get_service, identity, plain_text
 
 
 class Leaderboard(Command):
@@ -17,4 +17,4 @@ class Leaderboard(Command):
             service = get_service(self.plugin)
             _, _, _, launcher_type, launcher_id = identity(context)
             scope = service.scope_id(launcher_type, launcher_id, service.config)
-            yield CommandReturn(text=await service.leaderboard(scope))
+            yield CommandReturn(text=plain_text(await service.leaderboard(scope)))

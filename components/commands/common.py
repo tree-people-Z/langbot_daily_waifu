@@ -1,6 +1,7 @@
 """Shared command helpers."""
 
 import base64
+import re
 from pathlib import Path
 
 from core.service import DailyService
@@ -33,4 +34,12 @@ def command_return(result: dict) -> CommandReturn:
             image_base64 = base64.b64encode(Path(image_path).read_bytes()).decode("ascii")
         except (OSError, TypeError, ValueError):
             image_base64 = None
-    return CommandReturn(text=result.get("text", ""), image_base64=image_base64)
+    return CommandReturn(text=plain_text(result.get("text", "")), image_base64=image_base64)
+
+
+def plain_text(text: str) -> str:
+    """Remove Markdown control syntax for chat adapters that send plain text."""
+    text = re.sub(r"^#{1,6}\s*", "", str(text), flags=re.MULTILINE)
+    text = text.replace("**", "")
+    text = re.sub(r"^---$", "", text, flags=re.MULTILINE)
+    return re.sub(r"\n{3,}", "\n\n", text).strip()
