@@ -252,7 +252,7 @@ class DailyService:
         today = self.today()
         existing = await self._wife(sender_id, group_id, today)
         if not existing:
-            return {"text": "你还没有今天的老婆，先发送 /日常 老婆 抽一个吧~"}
+            return {"text": "你还没有今天的老婆，先发送「老婆」抽一个吧~"}
         cost, limit, count = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2), int(existing[4])
         if limit > 0 and count >= limit:
             return {"text": f"今日换老婆次数已用完（上限 {limit} 次），明天再来吧~"}

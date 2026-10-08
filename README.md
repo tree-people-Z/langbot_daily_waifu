@@ -4,7 +4,7 @@ A LangBot 4.x plugin for daily check-in, points, leaderboards, and daily waifu d
 
 ## Commands
 
-Commands use the prefix configured in LangBot (commonly `!`). The default Chinese commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`. Chinese aliases include `打卡`, `我的`, `今日老婆`, `每日老婆`, and `换`.
+Commands use the prefix configured in LangBot (commonly `!`). The commands are `签到`, `我的信息`, `排行榜`, `老婆`, and `换老婆`; for example: `!签到`, `!老婆`, and `!换老婆`.
 
 ## Image sources
 
