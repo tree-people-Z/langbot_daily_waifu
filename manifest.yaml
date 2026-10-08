@@ -4,7 +4,7 @@ metadata:
   author: tree-people-Z
   name: DailyCheckinWaifu
   repository: https://github.com/tree-people-Z/langbot_daily_waifu
-  version: 0.2.3
+  version: 0.2.4
   description:
     en_US: Daily check-in, points, leaderboard, and daily waifu from local or Manshuo galleries.
     zh_Hans: 每日签到、积分排行与本地/漫朔图库抽老婆。
@@ -68,7 +68,7 @@ spec:
     - name: change_wife_cost
       type: integer
       label: {en_US: Change waifu cost, zh_Hans: 换老婆积分成本}
-      default: 300
+      default: 3000
     - name: change_wife_limit
       type: integer
       label: {en_US: Daily change limit, zh_Hans: 每日换老婆次数上限}
@@ -83,4 +83,5 @@ execution:
   python:
     path: main.py
     attr: DailyWaifuPlugin
+
 

@@ -225,7 +225,7 @@ class DailyService:
         today = self.today()
         existing = await self._wife(sender_id, group_id, today)
         if existing:
-            cost, limit = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2)
+            cost, limit = self._int("change_wife_cost", 3000), self._int("change_wife_limit", 2)
             lines = [f"# 💞 {sender_name}，今天已经抽到老婆啦！", f"**🎴 今日老婆：** {existing[0] or '神秘老婆'}"]
             if limit > 0:
                 lines.append(f"**🔄 今日已换：** {int(existing[4])}/{limit} 次")
@@ -235,7 +235,7 @@ class DailyService:
         if not result:
             return {"text": "老婆召唤失败，请检查图源配置或稍后再试~"}
         await self._save_wife(sender_id, group_id, today, result, 0)
-        cost, limit = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2)
+        cost, limit = self._int("change_wife_cost", 3000), self._int("change_wife_limit", 2)
         title = f"🎉 命运牵线成功！今天与你相伴的是：{result['name']}" if result.get("name") else "🎉 命运牵线成功！今天的专属老婆已送达！"
         text = [f"# {title}"]
         if limit > 0:
@@ -254,7 +254,7 @@ class DailyService:
         existing = await self._wife(sender_id, group_id, today)
         if not existing:
             return {"text": "# 还没有今日老婆\n\n先发送 **老婆** 抽一个吧~"}
-        cost, limit, count = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2), int(existing[4])
+        cost, limit, count = self._int("change_wife_cost", 3000), self._int("change_wife_limit", 2), int(existing[4])
         if limit > 0 and count >= limit:
             return {"text": f"# 换老婆次数已用完\n\n今日上限为 **{limit} 次**，明天再来吧~"}
         user = await self._user(sender_id, scope_id)
