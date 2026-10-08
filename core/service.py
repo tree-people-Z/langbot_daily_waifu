@@ -162,9 +162,9 @@ class DailyService:
     async def my_info(self, sender_id: str, scope_id: str, group_id: str, sender_name: str) -> str:
         user = await self._user(sender_id, scope_id)
         wife = await self._wife(sender_id, group_id, self.today())
-        lines = [f"👤 {sender_name} 的信息", f"累计积分：{user[0] if user else 0}",
-                 f"连续签到：{user[1] if user else 0} 天", f"总签到：{user[3] if user else 0} 次"]
-        lines.append(f"💞 今日老婆：{wife[0] or '神秘老婆'}" if wife else "💌 今日老婆：还没抽，快来抽一位吧！")
+        lines = [f"# 👤 {sender_name} 的信息", f"**累计积分：** {user[0] if user else 0:,}",
+                 f"**连续签到：** {user[1] if user else 0} 天", f"**总签到：** {user[3] if user else 0} 次"]
+        lines.append(f"**💞 今日老婆：** {wife[0] or '神秘老婆'}" if wife else "**💌 今日老婆：** 还没抽，快来抽一位吧！")
         return "\n".join(lines)
 
     async def leaderboard(self, scope_id: str) -> str:
@@ -173,10 +173,10 @@ class DailyService:
             cursor = await db.execute("SELECT sender_id,sender_name,points FROM users WHERE scope_id=? ORDER BY points DESC LIMIT 10", (scope_id,))
             rows = await cursor.fetchall()
         if not rows:
-            return "暂无排行数据，快去签到吧~"
-        lines = [f"🏆 {'本群' if scope_id else '全局'}积分排行榜 Top10"]
+            return "# 🏆 积分排行榜\n\n暂无排行数据，快去签到吧~"
+        lines = [f"# 🏆 {'本群' if scope_id else '全局'}积分排行榜 Top10"]
         medals = ["🥇", "🥈", "🥉"]
-        lines.extend(f"{medals[i] if i < 3 else str(i + 1) + '.'} {name or uid} — {points}" for i, (uid, name, points) in enumerate(rows))
+        lines.extend(f"{medals[i] if i < 3 else str(i + 1) + '.'} **{name or uid}** — {points:,} 积分" for i, (uid, name, points) in enumerate(rows))
         return "\n".join(lines)
 
     async def _wife(self, sender_id: str, group_id: str, today: str):
@@ -226,10 +226,10 @@ class DailyService:
         existing = await self._wife(sender_id, group_id, today)
         if existing:
             cost, limit = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2)
-            lines = [f"💞 {sender_name}，今天已经抽到老婆啦！", f"🎴 今日老婆：{existing[0] or '神秘老婆'}"]
+            lines = [f"# 💞 {sender_name}，今天已经抽到老婆啦！", f"**🎴 今日老婆：** {existing[0] or '神秘老婆'}"]
             if limit > 0:
-                lines.append(f"🔄 今日已换：{int(existing[4])}/{limit} 次")
-            lines.append(f"想再抽一次？发送「换老婆」（消耗 {cost} 积分）" if cost > 0 else "还想换一位？发送「换老婆」即可免费重抽")
+                lines.append(f"**🔄 今日已换：** {int(existing[4])}/{limit} 次")
+            lines.append(f"想再抽一次？发送 **换老婆**（消耗 {cost} 积分）" if cost > 0 else "还想换一位？发送 **换老婆** 即可免费重抽")
             return {"name": existing[0] or "", "image": existing[1] or "", "source": existing[2] or "", "text": "\n".join(lines), "change_count": int(existing[4])}
         result = await self.draw()
         if not result:
@@ -237,10 +237,10 @@ class DailyService:
         await self._save_wife(sender_id, group_id, today, result, 0)
         cost, limit = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2)
         title = f"🎉 命运牵线成功！今天与你相伴的是：{result['name']}" if result.get("name") else "🎉 命运牵线成功！今天的专属老婆已送达！"
-        text = [title]
+        text = [f"# {title}"]
         if limit > 0:
-            text.append(f"🔄 今日换老婆次数：0/{limit}")
-        text.append(f"想重新抽取？发送「换老婆」（消耗 {cost} 积分）" if cost > 0 else "想重新抽取？发送「换老婆」即可免费重抽")
+            text.append(f"**🔄 今日换老婆次数：** 0/{limit}")
+        text.append(f"想重新抽取？发送 **换老婆**（消耗 {cost} 积分）" if cost > 0 else "想重新抽取？发送 **换老婆** 即可免费重抽")
         return {**result, "text": "\n".join(text), "change_count": 0}
 
     async def _save_wife(self, sender_id: str, group_id: str, today: str, result: dict, count: int):
@@ -253,17 +253,17 @@ class DailyService:
         today = self.today()
         existing = await self._wife(sender_id, group_id, today)
         if not existing:
-            return {"text": "你还没有今天的老婆，先发送「老婆」抽一个吧~"}
+            return {"text": "# 还没有今日老婆\n\n先发送 **老婆** 抽一个吧~"}
         cost, limit, count = self._int("change_wife_cost", 300), self._int("change_wife_limit", 2), int(existing[4])
         if limit > 0 and count >= limit:
-            return {"text": f"今日换老婆次数已用完（上限 {limit} 次），明天再来吧~"}
+            return {"text": f"# 换老婆次数已用完\n\n今日上限为 **{limit} 次**，明天再来吧~"}
         user = await self._user(sender_id, scope_id)
         points = user[0] if user else 0
         if cost > 0 and points < cost:
-            return {"text": f"积分不足，换老婆需要 {cost:,} 积分，你当前有 {points:,} 积分，还差 {cost - points:,} 积分。"}
+            return {"text": f"# 积分不足\n\n换老婆需要 **{cost:,} 积分**，你当前有 **{points:,} 积分**，还差 **{cost - points:,} 积分**。"}
         result = await self.draw()
         if not result:
-            return {"text": "老婆召唤失败，请检查图源配置或稍后再试~"}
+            return {"text": "# 老婆召唤失败\n\n请检查图源配置或稍后再试~"}
         await self._ensure_db()
         async with self._db_lock, aiosqlite.connect(self.db_path) as db:
             await db.execute("BEGIN IMMEDIATE")
@@ -272,17 +272,17 @@ class DailyService:
             if cost > 0 and (not balance or balance[0] < cost):
                 await db.rollback()
                 current = balance[0] if balance else 0
-                return {"text": f"积分不足，换老婆需要 {cost:,} 积分，你当前有 {current:,} 积分，还差 {cost - current:,} 积分。"}
+                return {"text": f"# 积分不足\n\n换老婆需要 **{cost:,} 积分**，你当前有 **{current:,} 积分**，还差 **{cost - current:,} 积分**。"}
             if cost > 0:
                 await db.execute("UPDATE users SET points=points-?,sender_name=? WHERE sender_id=? AND scope_id=?", (cost, sender_name, sender_id, scope_id))
             await db.execute("INSERT INTO daily_wife(sender_id,group_id,date,character_name,image_url,source,extra,change_count) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(sender_id,group_id,date) DO UPDATE SET character_name=excluded.character_name,image_url=excluded.image_url,source=excluded.source,extra=excluded.extra,change_count=excluded.change_count", (sender_id, group_id, today, result.get("name", ""), result.get("image", ""), result.get("source", ""), json.dumps(result, ensure_ascii=False), count + 1))
             await db.commit()
         prefix = f"🔄 换老婆成功（消耗 {cost} 积分）" if cost > 0 else "🔄 换老婆成功"
         title = f"💘 {prefix}！新老婆是：{result.get('name')}" if result.get("name") else f"💘 {prefix}！新老婆已到位！"
-        lines = [title]
+        lines = [f"# {title}"]
         if limit > 0:
-            lines.append(f"🔄 今日换老婆次数：{count + 1}/{limit}")
+            lines.append(f"**🔄 今日换老婆次数：** {count + 1}/{limit}")
         user_after = await self._user(sender_id, scope_id)
         if user_after:
-            lines.append(f"💰 剩余积分：{user_after[0]:,}")
+            lines.append(f"**💰 剩余积分：** {user_after[0]:,}")
         return {**result, "text": "\n".join(lines)}
