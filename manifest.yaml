@@ -4,7 +4,7 @@ metadata:
   author: tree-people-Z
   name: DailyCheckinWaifu
   repository: https://github.com/tree-people-Z/langbot_daily_waifu
-  version: 0.1.0
+  version: 0.1.1
   description:
     en_US: Daily check-in, points, leaderboard, and daily waifu from local or Manshuo galleries.
     zh_Hans: 每日签到、积分排行与本地/漫朔图库抽老婆。
